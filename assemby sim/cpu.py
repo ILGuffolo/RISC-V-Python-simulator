@@ -58,6 +58,7 @@ class CPU:
     
     def execute(self, instr, debug = False): # --- INSTRUCTION SET --- #
         
+        #extracting values from instruction
         # constant
         opcode = self.bits(instr, 0, 7)
         rd     = self.bits(instr, 7, 5)
@@ -90,6 +91,7 @@ class CPU:
         Jimm = 0
         Jimm = (self.bits(instr, 31, 1) << 20) | (self.bits(instr, 12, 8) << 12) | (self.bits(instr, 20, 1) << 11) | (self.bits(instr, 21, 10) << 1)   
         Jimm = self.sign_extend(Jimm, 20)
+        
         
         # instructions
         if (opcode == 0b0110011 and
@@ -151,7 +153,7 @@ class CPU:
             b = self.read_reg(rs2)
             
             if a == b:
-                self.pc += Bimm
+                self.pc += Bimm -4 #accounting for fde cycle
             
         elif (opcode == 0b1100011 and
               funct3 == 0b001): #BNE
