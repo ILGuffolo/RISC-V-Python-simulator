@@ -238,6 +238,11 @@ def traslate(line): # --- TRANSLATOR --- #
             instr |= pack(func3, 12, 3)
             instr |= pack(rs1, 15, 5)
             instr |= pack(imm, 20, 12)
+            
+        case "ecall": #ECALL
+            
+            opcode = 0b1110011
+            instr |= pack(opcode, 0, 7)
         
     #END MATCH-CASE
     

@@ -181,6 +181,9 @@ class CPU:
             self.write_reg(rd, self.pc + 4)
             r = self.read_reg(rs1)
             self.pc += r + Iimm -4 #accounting for fde cycle
+        
+        elif (opcode == 0b1011111): #ECALL
+            print("!!!TO DOO!!! (im talking about ecall execution (slide 5) )")
             
         else:
             if debug : print("debug: unrecognized instruction")
