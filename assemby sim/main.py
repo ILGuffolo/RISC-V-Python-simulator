@@ -44,7 +44,7 @@ cpu = CPU()
 
 instruction_loader(cpu, lines, True)
 
-cpu.run_program(True)
+cpu.run_program()
 
 print("\nRegisters value:")
 print(cpu.regs)

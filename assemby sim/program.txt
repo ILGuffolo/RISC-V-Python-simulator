@@ -1,6 +1,6 @@
 addi a7, a7, 8
 addi a0, a0, 40
-addi a1, a1, 10
+addi a1, a1, 15
 ecall
 addi a7, a7, -4
 ecall
