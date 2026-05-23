@@ -1,5 +1,5 @@
 '''
-simulator envriomonet
+simulator environment
 '''
 
 from cpu import CPU
