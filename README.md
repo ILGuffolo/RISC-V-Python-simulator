@@ -7,8 +7,6 @@ write the code with any tool you like and paste it into the "assembly sim" folde
 # Coming updates
 completing instruction set
 
-ecalls to read and print to/from terminal
-
 global variables
 
 stack
