@@ -34,6 +34,86 @@ def substitute_alias(text, replacements, debug = False):
     if debug : print(text)
     return text
 
+def encode_R(opcode, func3, func7, rd, rs1, rs2):
+    
+    instr = 0b0
+    instr |= pack(opcode, 0, 7)
+    instr |= pack(rd, 7, 5)
+    instr |= pack(func3, 12, 3)
+    instr |= pack(rs1, 15, 5)
+    instr |= pack(rs2, 20, 5)
+    instr |= pack(func7, 25, 7)
+    
+    return instr
+            
+def encode_I(opcode, func3, rd, rs1, imm):
+    
+    instr = 0b0
+    instr |= pack(opcode, 0, 7)
+    instr |= pack(rd, 7, 5)
+    instr |= pack(func3, 12, 3)
+    instr |= pack(rs1, 15, 5)
+    instr |= pack(imm, 20, 12)
+    
+    return instr
+        
+def encode_S(opcode, func3, rs1, rs2, imm):
+    
+    instr = 0b0
+    
+    imm_low = bits(imm, 0, 5)
+    imm_high = bits(imm, 5, 7)
+    
+    instr |= pack(opcode, 0, 7)
+    instr |= pack(imm_low, 7, 5)
+    instr |= pack(func3, 12, 3)
+    instr |= pack(rs1, 15, 5)
+    instr |= pack(rs2, 20, 5)
+    instr |= pack(imm_high, 25, 7)
+    
+    return instr
+        
+def encode_B(opcode, func3, rs1, rs2, imm):
+    
+    instr = 0b0
+    
+    imm_low = bits(imm, 0, 4)
+    imm_high = bits(imm, 4, 6)
+    imm_11 = bits(imm, 10, 1)
+    imm_12 = bits(imm, 11, 1)
+    
+    instr |= pack(opcode, 0, 7)
+    instr |= pack(imm_11, 7, 1)
+    instr |= pack(imm_low, 8, 4)
+    instr |= pack(func3, 12, 3)
+    instr |= pack(rs1, 15, 5)
+    instr |= pack(rs2, 20, 5)
+    instr |= pack(imm_high, 25, 6)
+    instr |= pack(imm_12, 31, 1)
+    
+    return instr
+            
+def encode_U(opcode, rd, imm):
+            pass
+            
+def encode_J(opcode, rd, imm):
+    
+    instr = 0b0
+    
+    imm_20   = (imm >> 20) & 1
+    imm_high = (imm >> 12) & 0xFF
+    imm_11   = (imm >> 11) & 1
+    imm_low  = (imm >> 1) & 0x3FF
+    
+    instr |= pack(opcode, 0, 7)
+    instr |= pack(rd, 7, 5)
+    instr |= pack(imm_high, 12, 8)
+    instr |= pack(imm_11, 20, 1)
+    instr |= pack(imm_low, 21, 9)
+    instr |= pack(imm_20, 30, 1)
+          
+
+
 aliases = {
     "zero" : "x0", # Constant 0
     "ra" : "x1",   # Return addres
@@ -81,152 +161,76 @@ def traslate(line, debug = False): # --- TRANSLATOR --- #
     
     match tokens[0]:
         case "add": #ADD
-            rd = tokens[1]
-            rs1 = tokens[2]
-            rs2 = tokens[3]
             
-            opcode = 0b0110011
-            func3 =  0b000
-            func7 =  0b0000000
-            
-            instr |= pack(opcode, 0, 7)
-            instr |= pack(rd, 7, 5)
-            instr |= pack(func3, 12, 3)
-            instr |= pack(rs1, 15, 5)
-            instr |= pack(rs2, 20, 5)
-            instr |= pack(func7, 25, 7)
+            instr = encode_R(0b0110011,
+                             0b000,
+                             0b0000000,
+                             tokens[1],
+                             tokens[2],
+                             tokens[3]
+                             )
 
         
         case "sub": #SUB
             
-            rd = tokens[1]
-            rs1 = tokens[2]
-            rs2 = tokens[3]
-            
-            opcode = 0b0110011
-            func3 =  0b000
-            func7 =  0b0110000
-            
-            instr |= pack(opcode, 0, 7)
-            instr |= pack(rd, 7, 5)
-            instr |= pack(func3, 12, 3)
-            instr |= pack(rs1, 15, 5)
-            instr |= pack(rs2, 20, 5)
-            instr |= pack(func7, 25, 7)
+            instr = encode_R(0b0110011,
+                             0b000,
+                             0b0110000,
+                             tokens[1],
+                             tokens[2],
+                             tokens[3]
+                             )
         
         case "addi": #ADDI
             
-            rd = tokens[1]
-            rs1 = tokens[2]
-            imm = tokens[3]
-            
-            opcode = 0b0010011
-            func3 =  0b000
-            
-            instr |= pack(opcode, 0, 7)
-            instr |= pack(rd, 7, 5)
-            instr |= pack(func3, 12, 3)
-            instr |= pack(rs1, 15, 5)
-            instr |= pack(imm, 20, 12)
+            instr = encode_I(0b0010011,
+                             0b000,
+                             tokens[1],
+                             tokens[2],
+                             tokens[3])
         
         case "lw": #LW
             
-            rd = tokens[1]
-            rs1 = tokens[2]
-            imm = tokens[3]
-            
-            opcode = 0b0000011
-            func3 =  0b010
-            
-            instr |= pack(opcode, 0, 7)
-            instr |= pack(rd, 7, 5)
-            instr |= pack(func3, 12, 3)
-            instr |= pack(rs1, 15, 5)
-            instr |= pack(imm, 20, 12)
+            instr = encode_I(0b0000011,
+                             0b010,
+                             tokens[1],
+                             tokens[2],
+                             tokens[3]
+                             )
         
         case "sw": #SW
             
-            rs1 = tokens[1]
-            rs2 = tokens[2]
-            imm = tokens[3]
-            
-            opcode = 0b0100011
-            func3 =  0b010
-            
-            imm_low = bits(imm, 0, 5)
-            imm_high = bits(imm, 5, 7)
-            
-            instr |= pack(opcode, 0, 7)
-            instr |= pack(imm_low, 7, 5)
-            instr |= pack(func3, 12, 3)
-            instr |= pack(rs1, 15, 5)
-            instr |= pack(rs2, 20, 5)
-            instr |= pack(imm_high, 25, 7)
+            encode_S(0b0100011,
+                     0b010,
+                     tokens[1],
+                     tokens[2],
+                     tokens[3]
+                     )
         
         case "beq": #BEQ
             
-            rs1 = tokens[1]
-            rs2 = tokens[2]
-            imm = tokens[3]
-            
-            opcode = 0b1100011
-            func3 =  0b000
-            
-            imm_low = bits(imm, 0, 4)
-            imm_high = bits(imm, 4, 6)
-            imm_11 = bits(imm, 10, 1)
-            imm_12 = bits(imm, 11, 1)
-            
-            instr |= pack(opcode, 0, 7)
-            instr |= pack(imm_11, 7, 1)
-            instr |= pack(imm_low, 8, 4)
-            instr |= pack(func3, 12, 3)
-            instr |= pack(rs1, 15, 5)
-            instr |= pack(rs2, 20, 5)
-            instr |= pack(imm_high, 25, 6)
-            instr |= pack(imm_12, 31, 1)
+            encode_B(0b1100011,
+                     0b000,
+                     tokens[1],
+                     tokens[2],
+                     tokens[3]
+                     )
         
         case "bne": #BNE
             
-            rs1 = tokens[1]
-            rs2 = tokens[2]
-            imm = tokens[3]
-            
-            opcode = 0b1100011
-            func3 =  0b001
-            
-            imm_12   = (imm >> 12) & 1
-            imm_11   = (imm >> 11) & 1
-            imm_high = (imm >> 5)  & 0b111111
-            imm_low  = (imm >> 1)  & 0b1111
-            
-            instr |= pack(opcode, 0, 7)
-            instr |= pack(imm_11, 7, 1)
-            instr |= pack(imm_low, 8, 4)
-            instr |= pack(func3, 12, 3)
-            instr |= pack(rs1, 15, 5)
-            instr |= pack(rs2, 20, 5)
-            instr |= pack(imm_high, 25, 6)
-            instr |= pack(imm_12, 31, 1)
+            encode_B(0b1100011,
+                     0b001,
+                     tokens[1],
+                     tokens[2],
+                     tokens[3]
+                     )
         
         case "jal": #JAL
             
-            rd = tokens[1]
-            imm = tokens[2]
-            
-            opcode = 0b1011111
-            
-            imm_20    = (imm >> 20) & 1
-            imm_high = (imm >> 12) & 0xFF
-            imm_11    = (imm >> 11) & 1
-            imm_low  = (imm >> 1) & 0x3FF
-            
-            instr |= pack(opcode, 0, 7)
-            instr |= pack(rd, 7, 5)
-            instr |= pack(imm_high, 12, 8)
-            instr |= pack(imm_11, 20, 1)
-            instr |= pack(imm_low, 21, 9)
-            instr |= pack(imm_20, 30, 1)
+            encode_J(0b1011111,
+                     tokens[1],
+                     tokens[2]
+                     )
         
         case "jalr": #JALR
             
@@ -237,11 +241,12 @@ def traslate(line, debug = False): # --- TRANSLATOR --- #
             opcode = 0b1100111
             func3 =  0b000
             
-            instr |= pack(opcode, 0, 7)
-            instr |= pack(rd, 7, 5)
-            instr |= pack(func3, 12, 3)
-            instr |= pack(rs1, 15, 5)
-            instr |= pack(imm, 20, 12)
+            encode_I(0b1100111,
+                     0b000,
+                     tokens[1],
+                     tokens[2],
+                     tokens[3]
+                     )
             
         case "ecall": #ECALL
             
