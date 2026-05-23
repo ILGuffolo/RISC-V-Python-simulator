@@ -127,6 +127,100 @@ class CPU:
             b = self.read_reg(rs2)
 
             self.write_reg(rd, a - b)
+            
+        elif (opcode == 0b0110011 and
+              funct3 == 0b000 and
+              funct7 == 0b010000): #AND
+            
+            if debug : print(f"debug: and {rd}, {rs1}, {rs2}")
+            
+            a = self.read_reg(rs1)
+            b = self.read_reg(rs2)
+
+            self.write_reg(rd, a & b)
+            
+        elif (opcode == 0b0110011 and
+              funct3 == 0b000 and
+              funct7 == 0b010000): #OR
+            
+            if debug : print(f"debug: or {rd}, {rs1}, {rs2}")
+            
+            a = self.read_reg(rs1)
+            b = self.read_reg(rs2)
+
+            self.write_reg(rd, a | b)
+            
+        elif (opcode == 0b0110011 and
+              funct3 == 0b000 and
+              funct7 == 0b010000): #XOR
+            
+            if debug : print(f"debug: xor {rd}, {rs1}, {rs2}")
+            
+            a = self.read_reg(rs1)
+            b = self.read_reg(rs2)
+
+            self.write_reg(rd, a ^ b)
+            
+        elif (opcode == 0b0110011 and
+              funct3 == 0b000 and
+              funct7 == 0b010000): #SLL
+            
+            if debug : print(f"debug: sll {rd}, {rs1}, {rs2}")
+            
+            a = self.read_reg(rs1)
+            b = self.read_reg(rs2)
+
+            self.write_reg(rd, (a & 0xffffffff) << b)
+            
+        elif (opcode == 0b0110011 and
+              funct3 == 0b000 and
+              funct7 == 0b010000): #SRL
+            
+            if debug : print(f"debug: srl {rd}, {rs1}, {rs2}")
+            
+            a = self.read_reg(rs1)
+            b = self.read_reg(rs2)
+
+            self.write_reg(rd, (a & 0xffffffff) >> b)
+            
+        elif (opcode == 0b0110011 and
+              funct3 == 0b000 and
+              funct7 == 0b010000): #SRA
+            
+            if debug : print(f"debug: sra {rd}, {rs1}, {rs2}")
+            
+            a = self.read_reg(rs1)
+            b = self.read_reg(rs2)
+
+            self.write_reg(rd, (a & 0xffffffff) >>> b)
+            
+        elif (opcode == 0b0110011 and
+              funct3 == 0b000 and
+              funct7 == 0b010000): #SLT
+            
+            if debug : print(f"debug: slt {rd}, {rs1}, {rs2}")
+            
+            a = self.read_reg(rs1)
+            b = self.read_reg(rs2)
+
+            if a == b :
+                self.write_reg(rd, 1)
+            else:
+                self.write_reg(rd, 0)
+            
+        elif (opcode == 0b0110011 and
+              funct3 == 0b000 and
+              funct7 == 0b010000): #SLTU
+            
+            if debug : print(f"debug: sltu {rd}, {rs1}, {rs2}")
+            
+            a = self.read_reg(rs1) & 0xffffffff
+            b = self.read_reg(rs2) & 0xffffffff
+
+            if a == b :
+                self.write_reg(rd, 1)
+            else:
+                self.write_reg(rd, 0)
         
         elif (opcode == 0b0010011 and
               funct3 == 0b000): #ADDI

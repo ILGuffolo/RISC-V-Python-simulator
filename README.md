@@ -38,9 +38,25 @@ jal rd imm : (rd) = pc + 4; pc += imm
 
 jalr rd rs1 imm : (rd) = pc + 4; pc += (rs1) + imm
 
-ecall *
+and rd rs1 rs2 : (rd) = (rs1) and (rs2)
 
-* Code (a7) - Call name - Notes:
+or rd rs1 rs2 : (rd) = (rs1) or (rs2)
+
+xor rd rs1 rs2 : (rd) = (rs1) xor (rs2)
+
+sll rd rs1 rs2 : (rd) = (rs1) << (rs2)
+
+srl rd rs1 rs2 : (rd) = (rs1) >> (rs2)
+
+sra rd rs1 rs2 : (rd) = (rs1) >> (rs2) *with sign extension
+
+slt rd rs1 rs2 : if (rs1) == (rs2): (rd) = 1   else: (rd) = 0
+
+sltu rd rs1 rs2 : if (rs1) == (rs2): (rd) = 1   else: (rd) = 0 *unsigned
+
+ecall ***
+
+*** Code (a7) - Call name - Notes:
  1 - Print integer - value of a0
  4 - Print string - a0 = index of string
  5 - Read integer - saved in a0

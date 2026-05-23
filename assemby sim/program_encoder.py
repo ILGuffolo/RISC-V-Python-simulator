@@ -197,6 +197,86 @@ def traslate(line, debug = False): # --- TRANSLATOR --- #
                              tokens[1],
                              tokens[2],
                              tokens[3])
+            
+        case "and": #AND
+            
+            instr = encode_R(0b0110011,
+                             0b111,
+                             0b0000000,
+                             tokens[1],
+                             tokens[2],
+                             tokens[3]
+                             )
+            
+        case "or": #OR
+        
+            instr = encode_R(0b0110011,
+                             0b110,
+                             0b0000000,
+                             tokens[1],
+                             tokens[2],
+                             tokens[3]
+                             )
+        
+        case "xor": #XOR
+            
+            instr = encode_R(0b0110011,
+                             0b100,
+                             0b0000000,
+                             tokens[1],
+                             tokens[2],
+                             tokens[3]
+                             )
+        
+        case "sll": #SLL
+            
+            instr = encode_R(0b0110011,
+                             0b001,
+                             0b0000000,
+                             tokens[1],
+                             tokens[2],
+                             tokens[3]
+                             )
+        
+        case "srl": #SRL
+            
+            instr = encode_R(0b0110011,
+                             0b101,
+                             0b0000000,
+                             tokens[1],
+                             tokens[2],
+                             tokens[3]
+                             )
+        
+        case "sra": #SRA
+            
+            instr = encode_R(0b0110011,
+                             0b101,
+                             0b0100000,
+                             tokens[1],
+                             tokens[2],
+                             tokens[3]
+                             )
+        
+        case "slt": #SLT
+            
+            instr = encode_R(0b0110011,
+                             0b010,
+                             0b0000000,
+                             tokens[1],
+                             tokens[2],
+                             tokens[3]
+                             )
+        
+        case "xsltu": #SLTU
+            
+            instr = encode_R(0b0110011,
+                             0b011,
+                             0b0000000,
+                             tokens[1],
+                             tokens[2],
+                             tokens[3]
+                             )
         
         case "lw": #LW
             
